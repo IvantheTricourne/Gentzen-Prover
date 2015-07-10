@@ -3,7 +3,6 @@
   (lambda (left right)
     (or (axiom? left right) `(,left . ,right))))
 
-;;; This one is aware of the left thinning rule
 (define left-thin?
   (lambda (left right)
     (and (memq (car right) left)
@@ -14,11 +13,6 @@
          (or (and (singleton? left)
                   (equal? left right))
              (left-thin? left right)))))
-;;; This one only handles the basic axiom
-;; (define axiom?
-;;   (lambda (left right)
-;;     (and (singleton? left) (singleton? right)
-;;          (equal? left right))))
 
 (define left car)
 (define right cdr)
@@ -40,10 +34,7 @@
         (cadr exp))))
 
 ;; Rules
-(define rules '(apply-right-rule
-                apply-left-rule
-                choose
-                end))
+(define rules '(apply-right-rule apply-left-rule choose end))
 (define rule?
   (lambda (x)
     (cond
@@ -70,10 +61,8 @@
 ;; (list Path Rule-Application)
 (define step?
   (lambda (x)
-    (andmap
-     (lambda (y)
-       (and (path? (car y))
-            (rule? (cadr y)))) x)))
+    (and (path? (car x))
+         (rule? (cadr x)))))
 (define get-path (lambda (step) (car step)))
 (define get-rule (lambda (step) (cadr step)))
 
