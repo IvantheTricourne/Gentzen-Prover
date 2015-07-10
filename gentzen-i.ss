@@ -62,7 +62,8 @@
 (define step?
   (lambda (x)
     (and (path? (car x))
-         (rule? (cadr x)))))
+         (rule? (cadr x))
+         )))
 (define get-path (lambda (step) (car step)))
 (define get-rule (lambda (step) (cadr step)))
 
@@ -78,14 +79,13 @@
   (lambda (theo steps)
     (cond
      ((null? steps) theo)
-     (else (apply-step* (apply-step theo (car step))
+     (else (apply-step* (apply-step theo (car steps))
                         (cdr steps))))))
 (define apply-step
   (lambda (theo step)
     (let ([path (get-path step)]
           [rule (get-rule step)])
       (cond
-       ;; issue: not all rules are unary operators
        ((null? path) ((get-rule step) theo))
        ((tree? theo)
         (let ([lbl (car theo)]
