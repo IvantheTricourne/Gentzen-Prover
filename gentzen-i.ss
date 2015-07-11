@@ -101,8 +101,8 @@
 (define apply-choice
   (lambda (tree choice)
     (cond
-     ((= choice 1) (car tree))
-     (else (cadr tree)))))
+     ((= choice 1) (cadr tree))
+     (else (caddr tree)))))
 (define choose
   (lambda (choice)
     (lambda (tree)
@@ -114,8 +114,7 @@
 (define end
   (lambda ()
     (lambda (exp)
-      (let ([fst (cadr exp)]
-            [snd (caddr exp)])
+      (let ([fst (cadr exp)] [snd (caddr exp)])
         (if (and (boolean? fst) (boolean? snd))
             (and fst snd)
             exp)))))
@@ -147,7 +146,7 @@
 (define remove-left-expr
   (lambda (left exp)
     (cond
-     ((or (null? left) (equal? left exp))  '())
+     ((or (null? left) (equal? left exp)) '())
      ((equal? (car left) exp)
       (remove-left-expr (cdr left) exp))
      (else (cons (car left) (remove-left-expr (cdr left) exp))))))
