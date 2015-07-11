@@ -11,8 +11,7 @@
    '(() (choose 1))
    '(() (choose 2))
    ;; The thing for ending it
-   ;; '(() (end))
-   ))
+   '(() (end))))
 
 ;; ~P => ~P
 (define negation-ex (start '((~ P)) '((~ P))))
