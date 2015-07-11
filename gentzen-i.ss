@@ -63,8 +63,7 @@
 (define get-rule (lambda (step) (cadr step)))
 (define step?
   (lambda (x)
-    (and (path? (get-path x))
-         (rule? (get-rule x)))))
+    (and (path? (get-path x)) (rule? (get-rule x)))))
 
 ;; A proof is one of:
 ;; (list Theorem Steps)
@@ -83,8 +82,7 @@
             (cdr steps))))))
 (define apply-step
   (lambda (theo step)
-    (let ([path (get-path step)]
-          [rule (get-rule step)])
+    (let ([path (get-path step)] [rule (get-rule step)])
       (cond
        ((null? path) ((eval (get-rule step)) theo))
        ((tree? theo)
