@@ -4,8 +4,15 @@
 (define modus-ponens (start '(P (P > Q)) '(Q)))
 
 (define modus-steps
-  `(,(list '() (apply-left-rule '(P > Q)))
-    ,(list '() (end))))
+  (list
+   '(() (apply-left-rule '(P > Q)))
+   ;; junk for testing
+   '(() (apply-right-rule))
+   '(() (choose 1))
+   '(() (choose 2))
+   ;; The thing for ending it
+   ;; '(() (end))
+   ))
 
 ;; ~P => ~P
 (define negation-ex (start '((~ P)) '((~ P))))
