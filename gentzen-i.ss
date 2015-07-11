@@ -38,7 +38,7 @@
 (define rule?
   (lambda (x)
     (cond
-     ((memq x rules) #t)
+     ((memq (car x) rules) #t)
      (else #f))))
 
 ;; A tree is one of
@@ -59,37 +59,36 @@
 
 ;; A step is one of
 ;; (list Path Rule-Application)
-(define step?
-  (lambda (x)
-    (and (path? (car x))
-         (rule? (cadr x))
-         )))
 (define get-path (lambda (step) (car step)))
 (define get-rule (lambda (step) (cadr step)))
+(define step?
+  (lambda (x)
+    (and (path? (get-path x))
+         (rule? (get-rule x)))))
 
 ;; A proof is one of:
 ;; (list Theorem Steps)
+;; A theorem is a (start left right)
 (define Prove
   (lambda (theo steps)
     (cond
-     ((andmap step? steps)
-      (apply-step* theo steps))
+     ((andmap step? steps) (apply-step* theo steps))
      (else theo))))
 (define apply-step*
   (lambda (theo steps)
     (cond
      ((null? steps) theo)
-     (else (apply-step* (apply-step theo (car steps))
-                        (cdr steps))))))
+     (else (apply-step*
+            (apply-step theo (car steps))
+            (cdr steps))))))
 (define apply-step
   (lambda (theo step)
     (let ([path (get-path step)]
           [rule (get-rule step)])
       (cond
-       ((null? path) ((get-rule step) theo))
+       ((null? path) ((eval (get-rule step)) theo))
        ((tree? theo)
-        (let ([lbl (car theo)]
-              [fst (cadr theo)]
+        (let ([lbl (car theo)] [fst (cadr theo)]
               [snd (caddr theo)]
               [step^ (list (cdr path) rule)])
           (cond
@@ -111,15 +110,15 @@
           (apply-choice tree choice)
           tree))))
 
-;; tbu for conj
+;; tbu for conj (i.e. the thing the requires all things to be finished)
 (define end
   (lambda ()
     (lambda (exp)
       (let ([fst (cadr exp)]
-            [snd (cadr exp)])
+            [snd (caddr exp)])
         (if (and (boolean? fst) (boolean? snd))
             (and fst snd)
-            `(conj ,fst ,snd))))))
+            exp)))))
 
 ;;; Right rules are really simple
 ;;; Simply, create a new proof or a list of goals
@@ -164,6 +163,5 @@
             ((^) (start (append l (list (car exp) (caddr exp))) r))
             ((v) `(disj ,(start (append l (list (car exp))) r)
                         ,(start (append l (list (caddr exp))) r)))
-            ;; should this be `proof` or `(start left right)`?
             ((#f) proof)))
         proof))))
