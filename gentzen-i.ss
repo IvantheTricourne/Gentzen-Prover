@@ -3,6 +3,9 @@
   (lambda (left right)
     (or (axiom? left right) `(,left . ,right))))
 
+(define left car)
+(define right cdr)
+
 (define left-thin?
   (lambda (left right)
     (and (memq (car right) left)
@@ -13,9 +16,6 @@
          (or (and (singleton? left)
                   (equal? left right))
              (left-thin? left right)))))
-
-(define left car)
-(define right cdr)
 
 (define-syntax show
   (syntax-rules (=>)
