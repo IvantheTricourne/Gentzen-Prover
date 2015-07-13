@@ -86,7 +86,8 @@
       (cond
        ((null? path) ((eval (get-rule step)) theo))
        ((tree? theo)
-        (let ([lbl (car theo)] [fst (cadr theo)]
+        (let ([lbl (car theo)]
+              [fst (cadr theo)]
               [snd (caddr theo)]
               [step^ (list (cdr path) rule)])
           (cond
@@ -111,11 +112,11 @@
 ;; tbu for conj (i.e. the thing the requires all things to be finished)
 (define end
   (lambda ()
-    (lambda (exp)
-      (let ([fst (cadr exp)] [snd (caddr exp)])
+    (lambda (tree)
+      (let ([fst (cadr tree)] [snd (caddr tree)])
         (if (and (boolean? fst) (boolean? snd))
             (and fst snd)
-            exp)))))
+            tree)))))
 
 ;;; Right rules are really simple
 ;;; Simply, create a new proof or a list of goals
@@ -129,7 +130,7 @@
           ;; maybe put an `or` since these should simplify to #t
           ((v) `(disj ,(start l (list (car r))) ,(start l (cddr r))))
           ;; the event right is a singleton
-          ((#f) proof))))))
+          (#f proof))))))
 
 ;;; Left is a bit more complicated
 ;;; We need to find a target expression
@@ -158,7 +159,7 @@
             ((>) `(conj ,(start l (list (car exp)))
                         ,(start (append l (cddr exp)) r)))
             ((^) (start (append l (list (car exp) (caddr exp))) r))
-            ((v) `(disj ,(start (append l (list (car exp))) r)
+            ((v) `(conj ,(start (append l (list (car exp))) r)
                         ,(start (append l (list (caddr exp))) r)))
             ((#f) proof)))
         proof))))
