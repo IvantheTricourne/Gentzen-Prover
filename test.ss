@@ -32,8 +32,7 @@
 ;; P v Q => P
 (define left-disj (start '(P v Q) '(P)))
 (define left-disj-steps
-  '((() (apply-left-rule '(P v Q)))
-    (() (choose 1))))
+  '((() (apply-left-rule '(P v Q)))))
 
 ;; P => P v Q
 (define right-disj (start '(P) '(P v Q)))
